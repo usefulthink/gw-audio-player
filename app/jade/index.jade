@@ -1,0 +1,27 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(name='description', content='')
+    meta(name='author', content='')
+
+    title german wahnsinn audio-player
+
+    link(rel='stylesheet', href='styles/main.css')
+    script(src='bower_components/modernizr/modernizr.js')
+    //if lt IE 9
+      script(src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js')
+      script(src='https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js')
+  body
+
+    .img-loader-progress.progress-bar
+      .progress-bar-progress
+
+    // Scripts
+    // ==================================================
+    // Placed at the end of the document so the pages load faster
+    // script(src='scripts/app.js')
+    script(src='scripts/vendor.js')
+    script(src='scripts/main.js')

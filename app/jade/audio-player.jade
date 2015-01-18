@@ -1,0 +1,14 @@
+.main
+  .animation-container
+    img.animation
+
+  .audio-info
+    .progress-bar
+      .progress-bar-progress
+
+    .title= title
+    ul.metadata
+      each meta in metadata
+        li
+          strong= meta.label
+          = meta.value

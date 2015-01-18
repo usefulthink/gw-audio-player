@@ -1,0 +1,96 @@
+$ciPink: #ff0064;
+$fontWeightHeavy: 900;
+
+// ---- box-sizing
+html { box-sizing: border-box; }
+* { box-sizing: inherit; }
+
+// ---- fundamentals / reset
+html, body { margin: 0; }
+
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  font-family: "Nitti Grotesk", sans-serif;
+}
+img { max-width: 100%; }
+
+
+// ---- LAYOUT
+.main {
+  padding-top: 100px;
+  max-width: 1280px;
+  margin: 0 auto;
+  font-size: 0; line-height: 0; word-spacing: -.31em;
+}
+
+.animation-container, .audio-info {
+  display: inline-block;
+  vertical-align: middle;
+
+  font-size: 1rem; line-height: 1.3; word-spacing: normal;
+}
+
+.title {
+  font-size: 2.25em;
+  line-height: 1;
+  margin-top: .75em;
+  text-transform: uppercase;
+  font-weight: $fontWeightHeavy;
+}
+
+.metadata {
+  padding: 0;
+  list-style: none;
+  margin: .25em 0 0;
+
+  strong {
+    margin-right: .6em;
+  }
+}
+
+// ---- animations
+.animation-container {
+  position: relative;
+  width: 50%;
+  padding: 0 10px;
+
+  .animation { width: 100%; }
+}
+
+// ---- audio-player controls
+.audio-info {
+  width: 50%;
+  padding: 6% 10px 0;
+
+  .progress-bar {
+    padding-bottom: 4px;
+    border-bottom: 4px solid black;
+    cursor: pointer;
+  }
+  .progress-bar-progress {
+    height: 1.2em;
+  }
+}
+
+.progress-bar {
+  overflow: hidden;
+}
+
+.progress-bar-progress {
+  background: $ciPink;
+  transform: translateX(-100%);
+}
+
+.img-loader-progress {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+
+  .progress-bar-progress {
+    height: 4px; opacity: 1;
+    transition: opacity 1s;
+  }
+}
