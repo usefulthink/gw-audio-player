@@ -19,7 +19,7 @@ var playerTemplate = require('../jade/audio-player.jade');
  * @param {HTMLElement} rootEl
  * @constructor
  */
-function AudioPlayer() {
+function AudioPlayer(options) {
   /**
    * @type {HTMLElement}
    */
@@ -31,14 +31,9 @@ function AudioPlayer() {
    */
   this.audioEl_ = null;
 
-  this.audioSrc_ = '/audio/test.mp3';
-  this.title_ = 'I\'m a maschine';
-  this.metadata_ = [
-    { label: 'Artist', value: 'Glass Lux' },
-    { label: 'Album', value: 'Glass Lux – Singles' },
-    { label: 'Source', value: 'freemusicarchive.org'},
-    { label: 'Why?', value: 'Just a random Creative-Commons Track' }
-  ];
+  this.audioSrc_ = options.src;
+  this.title_ = options.title;
+  this.metadata_ = options.metadata;
 
   this.initDomElements_();
   this.bindEvents_();
