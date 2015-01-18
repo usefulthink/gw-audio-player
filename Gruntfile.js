@@ -163,25 +163,25 @@ module.exports = function(grunt) {
     },
 
     browserify: {
-      vendor: {
-        src: [],
-        dest: '.tmp/scripts/vendor.js',
-        options: {
-          debug: true,
-          //require: ['jquery', 'lodash', 'backbone'],
-          require: ['jquery'],
-          alias: [
-            'lodash:underscore'
-          ]
-        }
-      },
+      //vendor: {
+      //  src: [],
+      //  dest: '.tmp/scripts/vendor.js',
+      //  options: {
+      //    debug: true,
+      //    //require: ['jquery', 'lodash', 'backbone'],
+      //    require: ['jquery'],
+      //    alias: [
+      //      'lodash:underscore'
+      //    ]
+      //  }
+      //},
       dev: {
         src: ['<%= yeoman.app %>/scripts/main.js'],
         dest: '.tmp/scripts/main.js',
         options: {
           debug: true,
           //external: ['jquery', 'lodash', 'backbone'],
-          external: ['jquery'],
+          external: [],
           transform: ['browserify-jade']
         }
       },
@@ -191,7 +191,7 @@ module.exports = function(grunt) {
         options: {
           debug: true,
           //external: ['jquery', 'lodash', 'backbone'],
-          external: ['jquery'],
+          external: [],
           transform: ['browserify-jade']
           // ignore: ['test/lib/*.js', 'test/spec/*.js']
         }
@@ -210,6 +210,7 @@ module.exports = function(grunt) {
           '.tmp/index.html': '<%= yeoman.app %>/jade/index.jade'
         }
       },
+
       compile: {
         options: {
           data: {
@@ -217,7 +218,7 @@ module.exports = function(grunt) {
           }
         },
         files: {
-          '<%= yeoman.app %>/index.html': '<%= yeoman.app %>/index.jade'
+          '<%= yeoman.app %>/index.html': '<%= yeoman.app %>/jade/index.jade'
         }
       }
     },
@@ -239,12 +240,12 @@ module.exports = function(grunt) {
         banner: '<%= banner %>'
       },
       dev: {
-        src: ['.tmp/scripts/vendor.js', '.tmp/scripts/main.js'],
-        dest: '.tmp/scripts/app.js'
+        src: ['.tmp/scripts/main.js'],
+        dest: '.tmp/scripts/main.js'
       },
       dist: {
-        src: ['.tmp/scripts/vendor.js', '.tmp/scripts/main.js'],
-        dest: '.tmp/scripts/app.js'
+        src: ['.tmp/scripts/main.js'],
+        dest: '.tmp/scripts/main.js'
       }
     },
 
@@ -259,6 +260,26 @@ module.exports = function(grunt) {
       }
     },
 
+    cssmin: {
+      dist: {
+        files: {
+          '<%= yeoman.dist %>/styles/main.css': [
+            '.tmp/styles/{,*/}*.css'
+          ]
+        }
+      }
+    },
+
+    uglify: {
+      dist: {
+        files: {
+          '<%= yeoman.dist %>/scripts/main.js': [
+            '.tmp/scripts/main.js'
+          ]
+        }
+      }
+    },
+
     // Put files not handled in other tasks here
     copy: {
       dist: {
@@ -268,10 +289,12 @@ module.exports = function(grunt) {
           cwd: '<%= yeoman.app %>',
           dest: '<%= yeoman.dist %>',
           src: [
+            'index.html',
             '*.{ico,png,txt}',
             '.htaccess',
-            'images/{,*/}*.webp',
-            'styles/fonts/{,*/}*.*'
+            'images/{,*/}*.{gif,jpeg,jpg,png,webp}',
+            'styles/fonts/{,*/}*.*',
+            'audio/*'
           ]
         }]
       },
@@ -284,16 +307,16 @@ module.exports = function(grunt) {
       }
     },
 
-    modernizr: {
-      devFile: '<%= yeoman.vendor %>/modernizr/modernizr.js',
-      outputFile: '<%= yeoman.dist %>/bower_components/modernizr/modernizr.js',
-      files: [
-        '<%= yeoman.dist %>/scripts/{,*/}*.js',
-        '<%= yeoman.dist %>/styles/{,*/}*.css',
-        '!<%= yeoman.dist %>/scripts/vendor/*'
-      ],
-      uglify: true
-    },
+    //modernizr: {
+    //  devFile: '<%= yeoman.vendor %>/modernizr/modernizr.js',
+    //  outputFile: '<%= yeoman.dist %>/bower_components/modernizr/modernizr.js',
+    //  files: [
+    //    '<%= yeoman.dist %>/scripts/{,*/}*.js',
+    //    '<%= yeoman.dist %>/styles/{,*/}*.css',
+    //    '!<%= yeoman.dist %>/scripts/vendor/*'
+    //  ],
+    //  uglify: true
+    //},
     concurrent: {
       server: [
         'sass:dev',
@@ -313,10 +336,7 @@ module.exports = function(grunt) {
         'sass:dist',
         'browserify',
         'jade',
-        'copy:styles',
-        'imagemin',
-        'svgmin',
-        'htmlmin'
+        'copy:styles'
       ]
     }
   });
@@ -352,16 +372,13 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
     'concat',
     'cssmin',
     'uglify',
-    'modernizr',
-    'copy:dist',
-    'rev',
-    'usemin'
+    //'modernizr',
+    'copy:dist'
   ]);
 
   grunt.registerTask('default', [
