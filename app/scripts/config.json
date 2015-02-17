@@ -1,0 +1,26 @@
+{
+  "playerUrl": "http://localhost:9000/",
+  "formUrl": "http://localhost:9000/form.html",
+  "animations": {
+    "amp": {
+      "filenamePattern": "images/amp-loop/%05d.png",
+      "numImages": 79
+    },
+    "fish": {
+      "filenamePattern": "images/fish-loop/%05d.png",
+      "numImages": 200
+    },
+    "mariachi": {
+      "filenamePattern": "images/mariachi-loop/%05d.png",
+      "numImages": 80
+    },
+    "mirrorball": {
+      "filenamePattern": "images/mirrorball-loop/%05d.png",
+      "numImages": 125
+    },
+    "turntable": {
+      "filenamePattern": "images/turntable-loop/%05d.png",
+      "numImages": 117
+    }
+  }
+}

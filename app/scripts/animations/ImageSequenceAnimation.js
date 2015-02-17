@@ -5,7 +5,7 @@ var ImageLoader = require('./ImageLoader');
  * @param {Object} options
  * @constructor
  */
-function Amp(audioPlayer, options) {
+function ImageSequenceAnimation(audioPlayer, options) {
   /**
    * @type {AudioPlayer}
    * @private
@@ -49,6 +49,12 @@ function Amp(audioPlayer, options) {
   this.$img_ = this.$animationContainer_.querySelector('.animation');
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  this.imagesLoaded_ = false;
+
+  /**
    * current image-index
    * @type {number}
    * @private
@@ -71,7 +77,7 @@ function Amp(audioPlayer, options) {
  *
  * @private
  */
-Amp.prototype.loadImages_ = function () {
+ImageSequenceAnimation.prototype.loadImages_ = function () {
   // FIXME: extract to some common load-progress-monitor
   this.$progressBar_ = document.querySelector('.img-loader-progress .progress-bar-progress');
 
@@ -89,12 +95,13 @@ Amp.prototype.loadImages_ = function () {
     this.$progressBar_.style.transform = 'translateX(0)';
     this.$progressBar_.style.opacity = 0;
 
+    this.imagesLoaded_ = true;
     this.tick_();
   }.bind(this));
 
   this.$img_.src = this.imageLoader_.getFilename(0);
 
-  this.imageLoader_.start(this.options_.numThreads);
+  this.imageLoader_.start(6);
 };
 
 /**
@@ -102,7 +109,7 @@ Amp.prototype.loadImages_ = function () {
  *
  * @private
  */
-Amp.prototype.initAudioEvents_ = function() {
+ImageSequenceAnimation.prototype.initAudioEvents_ = function() {
   this.audioEl_ = this.audioPlayer_.getAudioEl();
 
   this.audioEl_.addEventListener('playing', function() {
@@ -120,8 +127,8 @@ Amp.prototype.initAudioEvents_ = function() {
  *
  * @private
  */
-Amp.prototype.tick_ = function() {
-  if(!this.isPlaying_) { return; }
+ImageSequenceAnimation.prototype.tick_ = function() {
+  if(!this.imagesLoaded_ || !this.isPlaying_) { return; }
 
   window.requestAnimationFrame(
     this.tick_.bind(this),
@@ -140,4 +147,4 @@ Amp.prototype.tick_ = function() {
 };
 
 
-module.exports = Amp;
+module.exports = ImageSequenceAnimation;

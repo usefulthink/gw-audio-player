@@ -1,4 +1,4 @@
 
 module.exports = {
-  Amp: require('./Amp')
+  ImageSequence: require('./ImageSequenceAnimation')
 };

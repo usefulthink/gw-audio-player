@@ -1,13 +1,13 @@
-var EventEmitter2 = require('eventemitter2').EventEmitter2;
+var EventEmitter = require('node-event-emitter');
 
 /**
  * @param {String} filenamePattern
  * @param {Number} numImages
- * @extends EventEmitter2
+ * @extends EventEmitter
  * @constructor
  */
 function ImageLoader(filenamePattern, numImages) {
-  EventEmitter2.call(this);
+  EventEmitter.call(this);
 
   /**
    * pattern for image filenames, should contain a printf-like
@@ -54,7 +54,7 @@ function ImageLoader(filenamePattern, numImages) {
   }
 }
 
-ImageLoader.prototype = Object.create(EventEmitter2.prototype);
+ImageLoader.prototype = Object.create(EventEmitter.prototype);
 ImageLoader.prototype.constructor = ImageLoader;
 
 var __ = ImageLoader.prototype;

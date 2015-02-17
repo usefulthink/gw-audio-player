@@ -1,6 +1,6 @@
 'use strict';
 var domUtils = require('./dom-utils');
-
+var vendorPrefix = require('./vendor-prefix.js');
 var playerTemplate = require('../jade/audio-player.jade');
 
 /**
@@ -31,9 +31,9 @@ function AudioPlayer(options) {
    */
   this.audioEl_ = null;
 
-  this.audioSrc_ = options.src;
+  this.audioSrc_ = options.file;
   this.title_ = options.title;
-  this.metadata_ = options.metadata;
+  this.metadata_ = options.meta;
 
   this.initDomElements_();
   this.bindEvents_();
@@ -72,7 +72,9 @@ __.getAudioEl = function() {
 __.updateProgress_ = function(currentTime, duration) {
   var pct = -100+(currentTime/duration * 100);
 
-  this.progressEl_.style.transform = 'translateX('+pct+'%)';
+  var s = this.progressEl_.style;
+
+  s.transform = s[vendorPrefix + 'Transform'] = 'translateX('+pct+'%)';
 };
 
 /**

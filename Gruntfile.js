@@ -48,12 +48,8 @@ module.exports = function(grunt) {
         tasks: ['jade:dev', 'browserify:dev']
       },
       browserify: {
-        files: ['<%= yeoman.app %>/scripts/**/*.{js,jade}', 'test/{,*/}*.js'],
+        files: ['<%= yeoman.app %>/scripts/**/*.{js,jade}'],
         tasks: ['browserify:dev', 'concat:dev']
-      },
-      mocha: {
-        files: ['test/{,*/}*.js'],
-        tasks: ['browserify:test', 'mocha']
       },
       livereload: {
         options: {
@@ -79,17 +75,6 @@ module.exports = function(grunt) {
           open: true,
           base: [
             '.tmp',
-            '<%= yeoman.app %>'
-          ]
-        }
-      },
-      test: {
-        options: {
-          hostname: 'localhost',
-          port: 9000,
-          base: [
-            '.tmp',
-            'test',
             '<%= yeoman.app %>'
           ]
         }
@@ -123,17 +108,8 @@ module.exports = function(grunt) {
       all: [
         'Gruntfile.js',
         '<%= yeoman.app %>/scripts/{,*/}*.js',
-        '!<%= yeoman.app %>/scripts/vendor/*',
-        'test/spec/{,*/}*.js'
+        '!<%= yeoman.app %>/scripts/vendor/*'
       ]
-    },
-    mocha: {
-      all: {
-        options: {
-          run: true,
-          urls: ['http://<%= connect.test.options.hostname %>:<%= connect.test.options.port %>/index.html']
-        }
-      }
     },
 
     // Compiles Sass to CSS and generates necessary files if requested
@@ -176,24 +152,17 @@ module.exports = function(grunt) {
       //  }
       //},
       dev: {
-        src: ['<%= yeoman.app %>/scripts/main.js'],
-        dest: '.tmp/scripts/main.js',
+        files: {
+          '.tmp/scripts/main.js': '<%= yeoman.app %>/scripts/main.js',
+          '.tmp/scripts/form.js': '<%= yeoman.app %>/scripts/form.js'
+        },
+        //src: ['<%= yeoman.app %>/scripts/main.js'],
+        //dest: '.tmp/scripts/main.js',
         options: {
           debug: true,
           //external: ['jquery', 'lodash', 'backbone'],
           external: [],
           transform: ['browserify-jade']
-        }
-      },
-      test: {
-        src: ['test/{,*/}*.js'],
-        dest: '.tmp/test/test.js',
-        options: {
-          debug: true,
-          //external: ['jquery', 'lodash', 'backbone'],
-          external: [],
-          transform: ['browserify-jade']
-          // ignore: ['test/lib/*.js', 'test/spec/*.js']
         }
       }
     },
@@ -207,7 +176,8 @@ module.exports = function(grunt) {
           }
         },
         files: {
-          '.tmp/index.html': '<%= yeoman.app %>/jade/index.jade'
+          '.tmp/index.html': '<%= yeoman.app %>/jade/index.jade',
+          '.tmp/form.html': '<%= yeoman.app %>/jade/form.jade'
         }
       },
 
@@ -321,16 +291,8 @@ module.exports = function(grunt) {
       server: [
         'sass:dev',
         'browserify:dev',
-        'browserify:vendor',
         'jade:dev',
         'copy:styles'
-      ],
-      test: [
-        'copy:styles',
-        'jshint',
-        'browserify:vendor',
-        'browserify:dev',
-        'browserify:test'
       ],
       dist: [
         'sass:dist',
@@ -361,15 +323,6 @@ module.exports = function(grunt) {
     grunt.task.run(['serve']);
   });
 
-  grunt.registerTask('test', [
-    'clean:server',
-    'concurrent:test',
-    'autoprefixer',
-    'connect:test',
-    'mocha',
-    'watch'
-  ]);
-
   grunt.registerTask('build', [
     'clean:dist',
     'concurrent:dist',
@@ -383,7 +336,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', [
     'newer:jshint',
-    'test',
     'build'
   ]);
 };
