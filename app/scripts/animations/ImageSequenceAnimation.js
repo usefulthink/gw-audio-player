@@ -18,12 +18,6 @@ function ImageSequenceAnimation(audioPlayer, options) {
   this.options_ = options;
 
   /**
-   * @type {Array.<Image>}
-   * @private
-   */
-  this.images_ = [];
-
-  /**
    * @type {ImageLoader}
    * @private
    */
@@ -62,6 +56,11 @@ function ImageSequenceAnimation(audioPlayer, options) {
   this.imageIndex_ = 0;
 
   /**
+   *
+   */
+  this.animationQueue_ = [];
+
+  /**
    * time (Date.now()) of the last rendered frame
    * @type {number}
    * @private
@@ -77,30 +76,52 @@ function ImageSequenceAnimation(audioPlayer, options) {
  *
  * @private
  */
-ImageSequenceAnimation.prototype.loadImages_ = function () {
+ImageSequenceAnimation.prototype.loadImages_ = function (options) {
+  this.imageLoader_ = new ImageLoader();
+
+  if(options.intro) {
+    this.imageLoader_.add(
+      'intro',
+      options.intro.filenamePattern,
+      options.intro.numImages
+    );
+  }
+
+  this.imageLoader_.add(
+    'loop',
+    options.filenamePattern,
+    options.numImages
+  );
+
+  if(options.outro) {
+    this.imageLoader_.add(
+      'outro',
+      options.outro.filenamePattern,
+      options.outro.numImages
+    );
+  }
+
+
   // FIXME: extract to some common load-progress-monitor
   this.$progressBar_ = document.querySelector('.img-loader-progress .progress-bar-progress');
 
-  this.imageLoader_ = new ImageLoader(
-    this.options_.filenamePattern,
-    this.options_.numImages
-  );
-
   this.imageLoader_.on('progress', function (img, numLoaded, numTotal) {
     this.$progressBar_.style.transform = 'translateX(' + (-100 + numLoaded / numTotal * 100) + '%)';
-    this.images_.push(img);
   }.bind(this));
 
-  this.imageLoader_.on('ready', function () {
+  this.imageLoader_.on('ready', function (sequences) {
     this.$progressBar_.style.transform = 'translateX(0)';
     this.$progressBar_.style.opacity = 0;
 
     this.imagesLoaded_ = true;
-    this.tick_();
+    this.sequences_ = sequences;
   }.bind(this));
 
-  this.$img_.src = this.imageLoader_.getFilename(0);
-
+  if(options.intro) {
+    this.$img_.src = this.imageLoader_.getFilename('intro', 0);
+  } else {
+    this.$img_.src = this.imageLoader_.getFilename('loop', 0);
+  }
   this.imageLoader_.start(6);
 };
 
@@ -113,13 +134,37 @@ ImageSequenceAnimation.prototype.initAudioEvents_ = function() {
   this.audioEl_ = this.audioPlayer_.getAudioEl();
 
   this.audioEl_.addEventListener('playing', function() {
-    this.isPlaying_ = true;
+    if(this.animationQueue_.length === 0) {
+      this.scheduleIntro();
+    }
+
+    this.audioIsPlaying_ = true;
     this.tick_();
   }.bind(this), false);
 
   this.audioEl_.addEventListener('pause', function() {
-    this.isPlaying_ = false;
+    this.scheduleOutro();
+    this.audioIsPlaying_ = false;
   }.bind(this), false);
+};
+
+ImageSequenceAnimation.prototype.scheduleIntro = function() {
+  if(this.sequences_.intro) {
+    this.animationQueue_.push.apply(
+        this.animationQueue_, this.sequences_.intro.images.slice(0));
+  }
+};
+
+ImageSequenceAnimation.prototype.scheduleOutro = function() {
+  if(this.sequences_.outro) {
+    this.animationQueue_.push.apply(
+        this.animationQueue_, this.sequences_.outro.images.slice(0));
+  }
+};
+
+ImageSequenceAnimation.prototype.scheduleLoop = function() {
+  this.animationQueue_.push.apply(
+      this.animationQueue_, this.sequences_.loop.images.slice(0));
 };
 
 /**
@@ -128,20 +173,28 @@ ImageSequenceAnimation.prototype.initAudioEvents_ = function() {
  * @private
  */
 ImageSequenceAnimation.prototype.tick_ = function() {
-  if(!this.imagesLoaded_ || !this.isPlaying_) { return; }
-
   window.requestAnimationFrame(
     this.tick_.bind(this),
     this.$animationContainer_
   );
 
+  if(!this.imagesLoaded_) { return; }
+
+  if(this.animationQueue_.length === 0) {
+    // if the queue is empty and audio isn't playing we stop.
+    if(!this.audioIsPlaying_) { return; }
+
+    // otherwise we reschedule the loop-part
+    this.scheduleLoop();
+  }
+
   var now = Date.now(),
     dt = now - this.lastFrameTime_;
 
-  if(dt > 40) {
-    this.imageIndex_ = (this.imageIndex_ + 1) % this.images_.length;
-    this.$img_.src = this.images_[this.imageIndex_].src;
+  if(dt > 1000/30) {
+    var next = this.animationQueue_.shift();
 
+    this.$img_.src = next.src;
     this.lastFrameTime_ = now;
   }
 };

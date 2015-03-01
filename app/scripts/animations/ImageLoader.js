@@ -6,24 +6,14 @@ var EventEmitter = require('node-event-emitter');
  * @extends EventEmitter
  * @constructor
  */
-function ImageLoader(filenamePattern, numImages) {
+function ImageLoader() {
   EventEmitter.call(this);
 
   /**
-   * pattern for image filenames, should contain a printf-like
-   * `%05d`-placeholder that will be replaced with the filename.
-   *
-   * @type {String}
+   * @type {{}}
    * @private
    */
-  this.filenamePattern_ = filenamePattern;
-
-  /**
-   * number of images to be loaded
-   * @type {Number}
-   * @private
-   */
-  this.numImages_ = numImages;
+  this.sequences_ = {};
 
   /**
    * number of images currently being loaded
@@ -36,28 +26,38 @@ function ImageLoader(filenamePattern, numImages) {
   /**
    * URLs left to be loaded.
    *
-   * @type {Array.<String>}
+   * @type {Array.<object>}
    * @private
    */
-  this.remainingImageUrls_ = [];
+  this.remainingImages_ = [];
 
-  /**
-   * loaded images
-   *
-   * @type {Array}
-   * @private
-   */
-  this.images_ = [];
-
-  for(var i=0; i<this.numImages_; i++) {
-    this.remainingImageUrls_.push(this.getFilename(i));
-  }
+  this.numImages_ = 0;
 }
 
 ImageLoader.prototype = Object.create(EventEmitter.prototype);
 ImageLoader.prototype.constructor = ImageLoader;
 
 var __ = ImageLoader.prototype;
+
+
+__.add = function(id, urlPattern, numImages) {
+  this.sequences_[id] = {
+    urlPattern: urlPattern,
+    numImages: numImages,
+    images: []
+  };
+
+  for(var i=0; i<numImages; i++) {
+    this.remainingImages_.push({
+      sequenceId: id,
+      index: i,
+      url: this.getFilename(id, i)
+    });
+  }
+
+  this.numImages_ += numImages;
+};
+
 
 /**
  * starts loading images via `numConnections` parallel connections
@@ -73,11 +73,14 @@ __.start = function(numConnections) {
 /**
  * creates image-filenames from the filename-pattern
  *
+ * @param id
  * @param {Number} idx
  * @returns {String}
  */
-__.getFilename = function(idx) {
-  return this.filenamePattern_.replace('%05d', (idx + 1e5).toString().slice(1))
+__.getFilename = function(id, idx) {
+  var pattern = this.sequences_[id].urlPattern;
+
+  return pattern.replace('%05d', (idx + 1e5).toString().slice(1))
 };
 
 
@@ -87,36 +90,33 @@ __.getFilename = function(idx) {
  * @private
  */
 __.loadNextImage_ = function() {
-  var file;
+  if(this.remainingImages_.length === 0) { return; }
 
-  // no images left...
-  file = this.remainingImageUrls_.shift();
-  if(!file) { return; }
+  var data = this.remainingImages_.shift();
 
   this.numLoading_++;
 
-  (function(file) {
+  (function(sequenceId, url, idx) {
     var img = new Image();
 
     img.onload = function() {
       this.numLoading_--;
+      this.sequences_[sequenceId].images[idx] = img;
       this.imageLoadingComplete_(img);
-      this.loadNextImage_();
 
-      this.images_.push(img);
+      this.loadNextImage_();
     }.bind(this);
 
     img.onerror = img.onabort = function() {
       console.error('problem!');
       this.numLoading_--;
+      this.sequences_[sequenceId].images[idx] = img;
       this.imageLoadingComplete_(img);
       this.loadNextImage_();
-
-      this.images_.push(img);
     }.bind(this);
 
-    img.src = file;
-  }.call(this, file));
+    img.src = url;
+  }.call(this, data.sequenceId, data.url, data.index));
 };
 
 /**
@@ -126,10 +126,10 @@ __.loadNextImage_ = function() {
  * @private
  */
 __.imageLoadingComplete_ = function(img) {
-  var numLoaded = this.numImages_ - this.remainingImageUrls_.length - this.numLoading_;
+  var numLoaded = this.numImages_ - this.remainingImages_.length - this.numLoading_;
 
   if(numLoaded === this.numImages_) {
-    this.emit('ready');
+    this.emit('ready', this.sequences_);
   } else {
     this.emit('progress', img, numLoaded, this.numImages_);
   }

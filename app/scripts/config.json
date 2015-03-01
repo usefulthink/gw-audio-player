@@ -1,26 +1,77 @@
 {
   "playerUrl": "http://localhost:9000/",
   "formUrl": "http://localhost:9000/form.html",
+
   "animations": {
     "amp": {
       "filenamePattern": "images/amp-loop/%05d.png",
       "numImages": 79
     },
+
     "fish": {
       "filenamePattern": "images/fish-loop/%05d.png",
-      "numImages": 200
+      "numImages": 200,
+
+      "intro": {
+        "filenamePattern": "images/fish-start/%05d.png",
+        "numImages": 29
+      },
+      "outro": {
+        "filenamePattern": "images/fish-end/%05d.png",
+        "numImages": 29
+      }
     },
+
     "mariachi": {
       "filenamePattern": "images/mariachi-loop/%05d.png",
-      "numImages": 80
+      "numImages": 80,
+      "intro": {
+        "filenamePattern": "images/mariachi-start/%05d.png",
+        "numImages": 25
+      },
+      "outro": {
+        "filenamePattern": "images/mariachi-end/%05d.png",
+        "numImages": 80
+      }
     },
+
     "mirrorball": {
       "filenamePattern": "images/mirrorball-loop/%05d.png",
-      "numImages": 125
+      "numImages": 125,
+      "intro": {
+        "filenamePattern": "images/mirrorball-start/%05d.png",
+        "numImages": 37
+      },
+      "outro": {
+        "filenamePattern": "images/mirrorball-end/%05d.png",
+        "numImages": 37
+      }
     },
+
     "turntable": {
       "filenamePattern": "images/turntable-loop/%05d.png",
-      "numImages": 117
+      "numImages": 117,
+      "intro": {
+        "filenamePattern": "images/turntable-start/%05d.png",
+        "numImages": 24
+      },
+      "outro": {
+        "filenamePattern": "images/turntable-end/%05d.png",
+        "numImages": 86
+      }
+    },
+
+    "walkman": {
+      "filenamePattern": "images/walkman-loop/%05d.png",
+      "numImages": 18,
+      "intro": {
+        "filenamePattern": "images/walkman-start/%05d.png",
+        "numImages": 30
+      },
+      "outro": {
+        "filenamePattern": "images/walkman-end/%05d.png",
+        "numImages": 38
+      }
     }
   }
 }
