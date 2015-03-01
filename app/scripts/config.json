@@ -1,6 +1,6 @@
 {
-  "playerUrl": "http://localhost:9000/",
-  "formUrl": "http://localhost:9000/form.html",
+  "playerUrl": "http://usefulthink.github.io/gw-audio-player/dist/",
+  "formUrl": "http://usefulthink.github.io/gw-audio-player/dist/form.html",
 
   "animations": {
     "amp": {
