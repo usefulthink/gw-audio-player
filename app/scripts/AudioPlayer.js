@@ -1,6 +1,6 @@
 'use strict';
 var domUtils = require('./dom-utils');
-
+var vendorPrefix = require('./vendor-prefix.js');
 var playerTemplate = require('../jade/audio-player.jade');
 
 /**
@@ -19,7 +19,7 @@ var playerTemplate = require('../jade/audio-player.jade');
  * @param {HTMLElement} rootEl
  * @constructor
  */
-function AudioPlayer() {
+function AudioPlayer(options) {
   /**
    * @type {HTMLElement}
    */
@@ -31,14 +31,9 @@ function AudioPlayer() {
    */
   this.audioEl_ = null;
 
-  this.audioSrc_ = '/audio/test.mp3';
-  this.title_ = 'I\'m a maschine';
-  this.metadata_ = [
-    { label: 'Artist', value: 'Glass Lux' },
-    { label: 'Album', value: 'Glass Lux – Singles' },
-    { label: 'Source', value: 'freemusicarchive.org'},
-    { label: 'Why?', value: 'Just a random Creative-Commons Track' }
-  ];
+  this.audioSrc_ = options.file;
+  this.title_ = options.title;
+  this.metadata_ = options.meta;
 
   this.initDomElements_();
   this.bindEvents_();
@@ -77,7 +72,9 @@ __.getAudioEl = function() {
 __.updateProgress_ = function(currentTime, duration) {
   var pct = -100+(currentTime/duration * 100);
 
-  this.progressEl_.style.transform = 'translateX('+pct+'%)';
+  var s = this.progressEl_.style;
+
+  s.transform = s[vendorPrefix + 'Transform'] = 'translateX('+pct+'%)';
 };
 
 /**

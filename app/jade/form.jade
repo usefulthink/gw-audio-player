@@ -1,0 +1,65 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(name='description', content='')
+    meta(name='author', content='')
+
+    title german wahnsinn audio-player
+
+    link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
+
+  body
+    .jumbotron
+      .container
+        h1 germanwahnsinn
+        p  audio-player Konfigurator
+    .container
+      .row
+        form.col-md-6
+          .form-group
+            label(for='file') URL mp3-Datei
+            input.form-control(id='file', name='file')
+            p.help-block.
+              vollständige URL (z.B.
+              <code><nobr>http://www.germanwahnsinn.de/audio/irgendwas.mp3</nobr></code>)
+          .form-group
+            label(for='title') Titel
+            input.form-control(id='title', name='title')
+            //p.help-block.
+          .form-group
+            label Motiv
+            select.form-control(name='theme')
+              option(value='amp') Amp
+              option(value='fish') Fisch
+              option(value='mariachi') Mariachi
+              option(value='mirrorball') Mirrorball
+              option(value='turntable') Turntable
+              option(value='walkman') Walkman
+
+            //p.help-block.
+          .form-group
+            label(for='meta') Metadaten
+            textarea.form-control.metadata(rows=5, id='meta', name='meta')
+            p.help-block.
+              Ein Eintrag pro Zeile, Label und Wert jeweils per Doppelpunkt
+              getrennt.<br>(z.B. <code>Künstler: Rantanplan</code>)
+
+        .col-md-6
+          .well
+            h3 Embed-Code
+            .form-group
+              label Titel
+              textarea.form-control.embed-code(
+                rows=5, readonly=true,
+                placeholder='...'
+              )
+              p.help-block.
+                Einfach kopieren und in die Präsentation einfügen
+            .form-group
+              a.preview-link(target='_blank', href='#') Vorschau öffnen
+
+
+    script(src='scripts/form.js')
