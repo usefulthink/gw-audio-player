@@ -242,11 +242,12 @@ module.exports = function(grunt) {
 
     uglify: {
       dist: {
-        files: {
-          '<%= yeoman.dist %>/scripts/main.js': [
-            '.tmp/scripts/main.js'
-          ]
-        }
+        files: [{
+          expand: true,
+          cwd: '.tmp',
+          src: 'scripts/*.js',
+          dest: '<%= yeoman.dist %>'
+        }]
       }
     },
 
@@ -259,12 +260,20 @@ module.exports = function(grunt) {
           cwd: '<%= yeoman.app %>',
           dest: '<%= yeoman.dist %>',
           src: [
-            'index.html',
             '*.{ico,png,txt}',
             '.htaccess',
             'images/{,*/}*.{gif,jpeg,jpg,png,webp}',
             'styles/fonts/{,*/}*.*',
             'audio/*'
+          ]
+        }, {
+          expand: true,
+          dot: true,
+          cwd: '.tmp',
+          dest: '<%= yeoman.dist %>',
+          src: [
+            //'scripts/*js',
+            '*.html'
           ]
         }]
       },
